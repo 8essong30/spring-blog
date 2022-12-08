@@ -25,7 +25,7 @@ public class BlogService {
     }
 
     @Transactional(readOnly = true)
-    public List<BlogResponseDto> getBlogs() {
+    public List<BlogResponseDto> getAllBlogs() {
         List<Blog> blogs = blogRepository.findAllByOrderByModifiedAtDesc();
         List<BlogResponseDto> blogResponseDto = new ArrayList<>();
         for (Blog blog : blogs){
@@ -33,6 +33,15 @@ public class BlogService {
         }
         return blogResponseDto;
     }
+
+    @Transactional(readOnly = true)
+    public BlogResponseDto getBlogs(Long id) {
+        Blog blog = blogRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+        );
+        return new BlogResponseDto(blog);
+    }
+
 
 
 }
