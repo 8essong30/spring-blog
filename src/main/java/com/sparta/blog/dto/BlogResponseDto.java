@@ -12,7 +12,6 @@ public class BlogResponseDto {
     private String contents;
     private LocalDateTime modifiedAt;
     private LocalDateTime createdAt;
-    private String msg;
 
     public BlogResponseDto(Blog blog) {
         this.title = blog.getTitle();
@@ -20,10 +19,6 @@ public class BlogResponseDto {
         this.contents = blog.getContents();
         this.createdAt = blog.getCreatedAt();
         this.modifiedAt = blog.getModifiedAt();
-    }
-
-    public BlogResponseDto(String msg){
-        this.msg = msg;
     }
 
 }

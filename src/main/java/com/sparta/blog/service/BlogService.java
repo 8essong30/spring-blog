@@ -18,10 +18,10 @@ public class BlogService {
     private final BlogRepository blogRepository;
 
     @Transactional
-    public Blog createBlog(BlogRequestDto blogRequestDto) {
+    public BlogResponseDto createBlog(BlogRequestDto blogRequestDto) {
         Blog blog = new Blog(blogRequestDto);
         blogRepository.save(blog);
-        return blog;
+        return new BlogResponseDto(blog);
     }
 
     @Transactional(readOnly = true)
@@ -54,7 +54,23 @@ public class BlogService {
             blog.update(requestDto);
             return new BlogResponseDto(blog);
         }else {
-            return new BlogResponseDto("비밀번호가 일치하지 않습니다.");
+            throw new IllegalStateException("비밀번호가 틀렸습니다!"); //기억 리턴타입이랑은 상관 없음..!
         }
+    }
+
+    public Boolean deleteBlog(Long id, String password) {
+        Blog blog = blogRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+        );
+        System.out.println("blog password = " + blog.getPassword());
+        System.out.println("entered password = " + password);
+
+        if(blog.getPassword().equals(password)) {
+            blogRepository.deleteById(id);
+            return true;
+        }else{
+            return false;
+        }
+
     }
 }

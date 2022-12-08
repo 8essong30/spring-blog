@@ -23,9 +23,9 @@ public class Blog extends Timestamped {
     private String contents;
 
     @Column(nullable = false)
-    private Long password;
+    private String password;
 
-    public Blog(String writer, String title, String contents, Long password) {
+    public Blog(String writer, String title, String contents, String password) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
