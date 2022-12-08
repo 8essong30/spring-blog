@@ -18,7 +18,7 @@ public class BlogService {
     private final BlogRepository blogRepository;
 
     @Transactional
-    public Blog createPost(BlogRequestDto blogRequestDto) {
+    public Blog createBlog(BlogRequestDto blogRequestDto) {
         Blog blog = new Blog(blogRequestDto);
         blogRepository.save(blog);
         return blog;
@@ -42,6 +42,19 @@ public class BlogService {
         return new BlogResponseDto(blog);
     }
 
+    @Transactional
+    public BlogResponseDto updateBlog(Long id, BlogRequestDto requestDto) {
+        Blog blog = blogRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+        );
+        System.out.println(requestDto.getPassword());
+        System.out.println(blog.getPassword());
 
-
+        if (blog.getPassword().equals(requestDto.getPassword())) {
+            blog.update(requestDto);
+            return new BlogResponseDto(blog);
+        }else {
+            return new BlogResponseDto("비밀번호가 일치하지 않습니다.");
+        }
+    }
 }

@@ -16,8 +16,8 @@ public class BlogController {
     private final BlogService blogService;
 
     @PostMapping("/blog")
-    public Blog createPost(@RequestBody BlogRequestDto requestDto) {
-        return blogService.createPost(requestDto);
+    public Blog createBlog(@RequestBody BlogRequestDto requestDto) {
+        return blogService.createBlog(requestDto);
     }
 
     @GetMapping("/blog")
@@ -30,4 +30,8 @@ public class BlogController {
         return blogService.getBlogs(id);
     }
 
+    @PutMapping("/blog/{id}")
+    public BlogResponseDto updateBlog(@PathVariable Long id, @RequestBody BlogRequestDto requestDto) {
+        return blogService.updateBlog(id, requestDto);
+    }
 }
