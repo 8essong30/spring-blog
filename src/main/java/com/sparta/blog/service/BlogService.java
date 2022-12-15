@@ -27,7 +27,7 @@ public class BlogService {
     @Transactional
     public BlogResponseDto createBlog(BlogRequestDto blogRequestDto, HttpServletRequest request) {
         //Request에서 Token 가져오기
-        String token = jwtUtil.resolceToken(request);
+        String token = jwtUtil.resolveToken(request);
         Claims claims;
 
         // 토큰이 있는 경우에만 게시글 작성
@@ -70,17 +70,31 @@ public class BlogService {
         return new BlogResponseDto(blog);
     }
 
-   /* @Transactional
-    public BlogResponseDto updateBlog(Long id, BlogRequestDto requestDto) {
-        Blog blog = blogRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
-        );
+    @Transactional
+    public BlogResponseDto updateBlog(Long id, BlogRequestDto requestDto, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
 
-        if (blog.getPassword().equals(requestDto.getPassword())) {
+        if (token != null) {
+            if (jwtUtil.validateToken(token)) {
+                claims = jwtUtil.getUserInfoFromToken(token);
+            }else {
+                throw new IllegalArgumentException("유효하지 않은 토큰!!");
+            }
+
+            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                    () -> new IllegalArgumentException("사용자 없어!")
+            );
+
+            Blog blog = blogRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+                    () -> new IllegalArgumentException("블로그 없어!")
+            );
+
             blog.update(requestDto);
+
             return new BlogResponseDto(blog);
         }else {
-            throw new IllegalStateException("비밀번호가 틀렸습니다!");
+            return null;
         }
     }
 
@@ -96,5 +110,5 @@ public class BlogService {
         }else{
             throw new IllegalStateException("비밀번호가 틀렸습니다.");
         }
-    }*/
+    }
 }

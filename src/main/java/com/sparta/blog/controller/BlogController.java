@@ -29,17 +29,18 @@ public class BlogController {
     }
 
     @GetMapping("/blog/{id}")
-    public BlogResponseDto getBlog(@PathVariable Long id) {
+    public BlogResponseDto getBlog(@PathVariable Long id)
+    {
         return blogService.getBlogs(id);
     }
 
-  /*  @PutMapping("/blog/{id}")
-    public BlogResponseDto updateBlog(@PathVariable Long id, @RequestBody BlogRequestDto requestDto) {
-        return blogService.updateBlog(id, requestDto);
+    @PutMapping("/blog/{id}")
+    public BlogResponseDto updateBlog(@PathVariable Long id, @RequestBody BlogRequestDto requestDto, HttpServletRequest request) {
+        return blogService.updateBlog(id, requestDto, request);
     }
 
     @DeleteMapping("/blog/{id}")
     public Long  deleteBlog(@PathVariable Long id, @RequestParam String password) {
         return blogService.deleteBlog(id, password);
-    }*/
+    }
 }
