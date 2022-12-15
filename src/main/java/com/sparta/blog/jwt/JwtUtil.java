@@ -1,6 +1,8 @@
 package com.sparta.blog.jwt;
 
 
+import com.sparta.blog.entity.Blog;
+import com.sparta.blog.entity.User;
 import com.sparta.blog.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -25,7 +27,7 @@ public class JwtUtil {
     //토큰 생성에 필요한 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String AUTHORIZATION_KEY = "auth";
-    public static final String BEARER_PREFIX = "Bearer";
+    public static final String BEARER_PREFIX = "Bearer ";
 
     private static final long TOKEN_TIME = 60 * 60 * 1000L;
 
@@ -41,7 +43,7 @@ public class JwtUtil {
     }
 
     // header에서 토큰 가져오기
-    public String resolceToken(HttpServletRequest request) {
+    public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7);
@@ -50,13 +52,12 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public String createToken(String username, UserRoleEnum role) {
+    public String createToken(String username) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(username)
-                        .claim(AUTHORIZATION_KEY, role)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)
@@ -84,4 +85,24 @@ public class JwtUtil {
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
+/*
+    // 토큰 유효성 검사
+    public boolean tokenIsVaild(String token, Claims claims){
+
+        if (jwtUtil.validateToken(token)) {
+            claims = jwtUtil.getUserInfoFromToken(token);
+        }else {
+            throw new IllegalArgumentException("유효하지 않은 토큰!!");
+        }
+
+        User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                () -> new IllegalArgumentException("사용자 없어!")
+        );
+
+        Blog blog = blogRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+                () -> new IllegalArgumentException("블로그 없어!")
+        );
+
+    }*/
+
 }
