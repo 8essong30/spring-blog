@@ -35,7 +35,8 @@ public class UserService {
         }
 
         User user = new User(username, password);
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
+
         return new ResponseEntity<>("회원가입 성공!", HttpStatus.OK);
     }
 
@@ -54,6 +55,6 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호 불일치!");
         }
 
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getRole()));
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
     }
 }

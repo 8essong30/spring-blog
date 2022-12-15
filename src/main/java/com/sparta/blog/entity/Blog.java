@@ -14,9 +14,6 @@ public class Blog extends Timestamped {
     private Long id;
 
     @Column(nullable = false)
-    private String username;
-
-    @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
@@ -26,15 +23,15 @@ public class Blog extends Timestamped {
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    public Blog(String username, String title, String contents, String password) {
-        this.username = username;
+    public Blog(String title, String contents) {
         this.title = title;
         this.contents = contents;
     }
 
-    public Blog(BlogRequestDto requestDto) {
+    public Blog(BlogRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
+        this.user = user;
     }
 
     public void update(BlogRequestDto requestDto) {

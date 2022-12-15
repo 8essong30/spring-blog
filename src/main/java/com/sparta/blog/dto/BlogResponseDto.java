@@ -17,7 +17,7 @@ public class BlogResponseDto {
     public BlogResponseDto(Blog blog) {
         this.id = blog.getId();
         this.title = blog.getTitle();
-        this.username = blog.getUsername();
+        this.username = blog.getUser().getUsername();
         this.contents = blog.getContents();
         this.createdAt = blog.getCreatedAt();
         this.modifiedAt = blog.getModifiedAt();

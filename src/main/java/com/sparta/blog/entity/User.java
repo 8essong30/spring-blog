@@ -17,8 +17,8 @@ public class User {
     @Column(name = "USER_ID")
     private Long id;
 
-    @OneToMany(mappedBy = "blog")
-    private List<Blog> blogs = new ArrayList<Blog>();
+    @OneToMany(mappedBy = "user")
+    private List<Blog> blog = new ArrayList<Blog>();
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -26,9 +26,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private UserRoleEnum role;
+//    @Column(nullable = false)
+//    @Enumerated(value = EnumType.STRING)
+//    private UserRoleEnum role;
 
 
     public User(String username, String password) {
