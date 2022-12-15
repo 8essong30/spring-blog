@@ -29,7 +29,7 @@ public class BlogService {
         List<Blog> blogs = blogRepository.findAllByOrderByModifiedAtDesc();
         List<BlogResponseDto> blogResponseDto = new ArrayList<>();
         for (Blog blog : blogs){
-            blogResponseDto.add(new BlogResponseDto(blog)); //블로그의 항목을 dto로 묶어서 새로 생성해서 리스트 만들어
+            blogResponseDto.add(new BlogResponseDto(blog));
         }
         return blogResponseDto;
     }
@@ -47,30 +47,26 @@ public class BlogService {
         Blog blog = blogRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
         );
-        System.out.println(requestDto.getPassword());
-        System.out.println(blog.getPassword());
 
         if (blog.getPassword().equals(requestDto.getPassword())) {
             blog.update(requestDto);
             return new BlogResponseDto(blog);
         }else {
-            throw new IllegalStateException("비밀번호가 틀렸습니다!"); //기억 리턴타입이랑은 상관 없음..!
+            throw new IllegalStateException("비밀번호가 틀렸습니다!");
         }
     }
 
-    public Boolean deleteBlog(Long id, String password) {
+
+    public Long deleteBlog(Long id, String password) {
         Blog blog = blogRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
         );
-        System.out.println("blog password = " + blog.getPassword());
-        System.out.println("entered password = " + password);
 
         if(blog.getPassword().equals(password)) {
             blogRepository.deleteById(id);
-            return true;
+            return id;
         }else{
-            return false;
+            throw new IllegalStateException("비밀번호가 틀렸습니다.");
         }
-
     }
 }

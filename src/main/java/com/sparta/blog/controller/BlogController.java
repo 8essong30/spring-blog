@@ -8,11 +8,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// Client라고 보통 표현. 앱, web, 또다른 서버가 될 수 있음
+//서비스에 로직을 처리하라고 전달하고 받아서 클라이언트에 결과 전달
+
 @RestController
 @RequiredArgsConstructor
 public class BlogController {
 
     private final BlogService blogService;
+
+    //API
+    //HTTP Method(GET, POST, PUT, DELETE) -> RestFul하게 설계
+    //-----------=> 동사이기 때문에 url에 동사(행동의 내용)를 쓰지 않음(통상적) /create-blog (X)
 
     @PostMapping("/blog")
     public BlogResponseDto createBlog(@RequestBody BlogRequestDto requestDto) {
@@ -35,7 +42,7 @@ public class BlogController {
     }
 
     @DeleteMapping("/blog/{id}")
-    public Boolean deleteBlog(@PathVariable Long id, @RequestParam String password) {
+    public Long  deleteBlog(@PathVariable Long id, @RequestParam String password) {
         return blogService.deleteBlog(id, password);
     }
 }
