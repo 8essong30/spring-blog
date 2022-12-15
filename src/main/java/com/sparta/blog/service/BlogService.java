@@ -11,6 +11,8 @@ import com.sparta.blog.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +47,7 @@ public class BlogService {
             );
 
             // 요청받은 Dto로 DB에 저장할 객체 만들깅
-            Blog blog = blogRepository.saveAndFlush(new Blog (blogRequestDto));
+            Blog blog = blogRepository.saveAndFlush(new Blog (blogRequestDto, user));
             return new BlogResponseDto(blog);
         } else {
             return null;
@@ -99,16 +101,32 @@ public class BlogService {
     }
 
 
-    public Long deleteBlog(Long id, String password) {
-        Blog blog = blogRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
-        );
+    public ResponseEntity<String> deleteBlog(Long id, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
 
-        if(blog.getPassword().equals(password)) {
+        if (token != null) {
+            if (jwtUtil.validateToken(token)) {
+                claims = jwtUtil.getUserInfoFromToken(token);
+            }else {
+                throw new IllegalArgumentException("유효하지 않은 토큰!!");
+            }
+
+            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                    () -> new IllegalArgumentException("사용자 없어!")
+            );
+
+            Blog blog = blogRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+                    () -> new IllegalArgumentException("블로그 없어!")
+            );
+
             blogRepository.deleteById(id);
-            return id;
+
+            return new ResponseEntity<>("삭제 성공!", HttpStatus.OK);
+
         }else{
-            throw new IllegalStateException("비밀번호가 틀렸습니다.");
+
+            return new ResponseEntity<>("안돼", HttpStatus.BAD_REQUEST);
         }
     }
 }
