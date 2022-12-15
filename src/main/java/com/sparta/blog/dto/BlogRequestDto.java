@@ -5,8 +5,6 @@ import lombok.Getter;
 
 @Getter
 public class BlogRequestDto {
-    private String writer;
     private String title;
     private String contents;
-    private String password;
 }

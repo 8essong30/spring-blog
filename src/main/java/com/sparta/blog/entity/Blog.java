@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Blog extends Timestamped {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String writer;
+    private String username;
 
     @Column(nullable = false)
     private String title;
@@ -22,25 +22,23 @@ public class Blog extends Timestamped {
     @Column(nullable = false)
     private String contents;
 
-    @Column(nullable = false)
-    private String password;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID")
+    private User user;
 
-    public Blog(String writer, String title, String contents, String password) {
-        this.writer = writer;
+    public Blog(String username, String title, String contents, String password) {
+        this.username = username;
         this.title = title;
         this.contents = contents;
-        this.password = password;
     }
 
-    public Blog(BlogRequestDto requestDto) {
-        this.writer = requestDto.getWriter();
+    public Blog(BlogRequestDto requestDto, Long userId) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
-        this.password = requestDto.getPassword();
+        this.userId = userId;
     }
 
     public void update(BlogRequestDto requestDto) {
-        this.writer = requestDto.getWriter();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
