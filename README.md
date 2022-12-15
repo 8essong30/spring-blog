@@ -53,7 +53,7 @@
 <br>
 
 ## API 명세
-![img.png](img.png)
+![image](https://user-images.githubusercontent.com/117057884/207797694-b19b08e0-2ae7-4874-af00-3bb4073aaa18.png)
 
 <br>
 
