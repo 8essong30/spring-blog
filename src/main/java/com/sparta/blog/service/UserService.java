@@ -1,9 +1,16 @@
 package com.sparta.blog.service;
 
+import com.sparta.blog.dto.SignupRequestDto;
+import com.sparta.blog.entity.User;
 import com.sparta.blog.jwt.JwtUtil;
 import com.sparta.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -11,4 +18,22 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+
+    @Transactional
+    public ResponseEntity<String> signup(SignupRequestDto signupRequestDto) {
+        String username = signupRequestDto.getUsername();
+        String password = signupRequestDto.getPassword();
+
+        //회원 중복 확인
+        Optional<User> found = userRepository.findByUsername(username);
+        if (found.isPresent()) {
+            throw new IllegalStateException("중복된 사용자임");
+        }
+
+        User user = new User(username, password);
+        userRepository.save(user);
+        return new ResponseEntity<>("회원가입 성공!", HttpStatus.OK);
+    }
+
+
 }
