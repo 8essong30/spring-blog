@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @Entity(name = "users")
@@ -13,6 +16,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
     private Long id;
+
+    @OneToMany(mappedBy = "blog")
+    private List<Blog> blogs = new ArrayList<Blog>();
 
     @Column(nullable = false, unique = true)
     private String username;

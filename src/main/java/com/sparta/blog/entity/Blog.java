@@ -32,10 +32,9 @@ public class Blog extends Timestamped {
         this.contents = contents;
     }
 
-    public Blog(BlogRequestDto requestDto, Long userId) {
+    public Blog(BlogRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
-        this.userId = userId;
     }
 
     public void update(BlogRequestDto requestDto) {

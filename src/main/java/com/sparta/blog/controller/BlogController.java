@@ -3,6 +3,7 @@ package com.sparta.blog.controller;
 import com.sparta.blog.dto.BlogRequestDto;
 import com.sparta.blog.dto.BlogResponseDto;
 import com.sparta.blog.service.BlogService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,13 +18,9 @@ public class BlogController {
 
     private final BlogService blogService;
 
-    //API
-    //HTTP Method(GET, POST, PUT, DELETE) -> RestFul하게 설계
-    //-----------=> 동사이기 때문에 url에 동사(행동의 내용)를 쓰지 않음(통상적) /create-blog (X)
-
     @PostMapping("/blog")
-    public BlogResponseDto createBlog(@RequestBody BlogRequestDto requestDto) {
-        return blogService.createBlog(requestDto);
+    public BlogResponseDto createBlog(@RequestBody BlogRequestDto requestDto, HttpServletRequest request) {
+        return blogService.createBlog(requestDto, request);
     }
 
     @GetMapping("/blog")
@@ -36,7 +33,7 @@ public class BlogController {
         return blogService.getBlogs(id);
     }
 
-    @PutMapping("/blog/{id}")
+  /*  @PutMapping("/blog/{id}")
     public BlogResponseDto updateBlog(@PathVariable Long id, @RequestBody BlogRequestDto requestDto) {
         return blogService.updateBlog(id, requestDto);
     }
@@ -44,5 +41,5 @@ public class BlogController {
     @DeleteMapping("/blog/{id}")
     public Long  deleteBlog(@PathVariable Long id, @RequestParam String password) {
         return blogService.deleteBlog(id, password);
-    }
+    }*/
 }
