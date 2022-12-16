@@ -63,6 +63,6 @@
 <br>
 
 ## API 명세
-![image](https://user-images.githubusercontent.com/117057884/208018785-7a32be34-c122-4d52-bce9-8909f8522214.png)
+![image](https://user-images.githubusercontent.com/117057884/208029370-d64628aa-6a9a-46bc-b691-ababf73fcc33.png)
 
 
