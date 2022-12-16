@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BlogRepository extends JpaRepository<Blog, Long> {
-    List<Blog> findAllByOrderByModifiedAtDesc(); //내림차순으로 정렬하라고 변수명 적은거임
+    List<Blog> findAllByOrderByModifiedAtDesc(); //내림차순 정렬
 
     Optional<Blog> findByIdAndUserId(Long id, Long userId);
 }

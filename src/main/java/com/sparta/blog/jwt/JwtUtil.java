@@ -1,9 +1,5 @@
 package com.sparta.blog.jwt;
 
-
-import com.sparta.blog.entity.Blog;
-import com.sparta.blog.entity.User;
-import com.sparta.blog.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -25,11 +21,12 @@ import java.util.Base64;
 public class JwtUtil {
 
     //토큰 생성에 필요한 값
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String AUTHORIZATION_KEY = "auth";
-    public static final String BEARER_PREFIX = "Bearer ";
+    public static final String AUTHORIZATION_HEADER = "Authorization"; //Header KEY 값
 
-    private static final long TOKEN_TIME = 60 * 60 * 1000L;
+//    public static final String AUTHORIZATION_KEY = "auth";  // 사용자 권한 값의 KEY.
+    public static final String BEARER_PREFIX = "Bearer "; //토큰 식별자
+
+    private static final long TOKEN_TIME = 60 * 60 * 1000L; //토큰 만료시간
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -85,8 +82,10 @@ public class JwtUtil {
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
+
+
 /*
-    // 토큰 유효성 검사
+    // 토큰 유효성 검사 중복 코드 묶을 수 있을까..?
     public boolean tokenIsVaild(String token, Claims claims){
 
         if (jwtUtil.validateToken(token)) {
@@ -103,6 +102,7 @@ public class JwtUtil {
                 () -> new IllegalArgumentException("블로그 없어!")
         );
 
-    }*/
+    }
+*/
 
 }

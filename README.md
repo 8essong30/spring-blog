@@ -47,15 +47,17 @@
 7. 선택한 게시글 삭제 API
    - 토큰을 검사한 후, 유효한 토큰이면서 해당 사용자가 작성한 게시글만 삭제 가능
    - 선택한 게시글을 삭제하고 Client 로 성공했다는 메시지, 상태코드 반환하기
-    
 
+
+
+<br>
+
+## 테이블 ERD
+![img_2.png](img_2.png)
     
 <br>
 
 ## API 명세
 ![image](https://user-images.githubusercontent.com/117057884/207797694-b19b08e0-2ae7-4874-af00-3bb4073aaa18.png)
 
-<br>
-
-## ERD
 
