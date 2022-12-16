@@ -52,12 +52,17 @@
 
 <br>
 
+## usecase
+![image](https://user-images.githubusercontent.com/117057884/208018384-aa38dc52-f117-4521-bf18-0b95ed981cbc.png)
+
+<br>
+
 ## 테이블 ERD
 ![img_2.png](img_2.png)
     
 <br>
 
 ## API 명세
-![image](https://user-images.githubusercontent.com/117057884/207797694-b19b08e0-2ae7-4874-af00-3bb4073aaa18.png)
+![image](https://user-images.githubusercontent.com/117057884/208018785-7a32be34-c122-4d52-bce9-8909f8522214.png)
 
 
