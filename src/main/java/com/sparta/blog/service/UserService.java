@@ -29,7 +29,7 @@ public class UserService {
         //회원 중복 확인
         Optional<User> found = userRepository.findByUsername(username);
         if (found.isPresent()) {
-            throw new IllegalStateException("중복된 사용자!");
+            throw new IllegalArgumentException("중복된 사용자!");
         }
 
         User user = new User(username, password);
@@ -39,9 +39,8 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public void login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public String login(LoginRequestDto loginRequestDto) {  // 정말 login관련된 처리만 여기서 하도록 설계
         String username = loginRequestDto.getUsername();
-        String password = loginRequestDto.getPassword();
 
         // 사용자 확인
         User user = userRepository.findByUsername(username).orElseThrow(
@@ -49,10 +48,19 @@ public class UserService {
         );
 
         // 비밀번호 확인
-        if (!user.getPassword().equals(password)) {
+        //1..비밀번호 확인 작업은 User가 해야할 의무가 있음. 역할을 객체로 옮겨
+        if (!user.isValidPassword(loginRequestDto.getPassword())) {
             throw new IllegalArgumentException("비밀번호 불일치!");
         }
 
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
+        // 3..httpServlet은 대체될 수 있다. 같은 기능을 제공하는 기술들이 많음
+        // 이걸 바꾼다고 했을 때 httpServlet을 받는 애들은 다 변경이 일어나야함
+        // 그래서 reponse를 안 남기는게 좋다..
+        // 요청을 받거나 응답을 할 떄는 항상 스콥을 최소화하는게 좋음 그래야 결합도가 낮아질 수 있음
+        // response가 필요한 이유를 찾아서 코드 변경
+
+        String generatedToken = jwtUtil.createToken(user.getUsername());
+
+        return generatedToken;
     }
 }

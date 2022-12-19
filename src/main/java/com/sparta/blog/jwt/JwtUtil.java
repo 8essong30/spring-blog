@@ -24,7 +24,7 @@ public class JwtUtil {
     public static final String AUTHORIZATION_HEADER = "Authorization"; //Header KEY 값
 
 //    public static final String AUTHORIZATION_KEY = "auth";  // 사용자 권한 값의 KEY.
-    public static final String BEARER_PREFIX = "Bearer "; //토큰 식별자
+    public static final String BEARER_PREFIX = "Bearer "; //토큰 식별자.
 
     private static final long TOKEN_TIME = 60 * 60 * 1000L; //토큰 만료시간
 
@@ -41,7 +41,7 @@ public class JwtUtil {
 
     // header에서 토큰 가져오기
     public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER); // Authorization의 키로 오는 Bearer Token  == 토큰으로 나를 증명한다 (약속)
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7);
         }

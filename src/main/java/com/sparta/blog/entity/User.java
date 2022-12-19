@@ -1,9 +1,11 @@
 package com.sparta.blog.entity;
 
+import com.sparta.blog.dto.LoginRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +18,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
     private Long id;
-
-    @OneToMany(mappedBy = "user")
-    private List<Blog> blog = new ArrayList<Blog>();
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -35,4 +34,10 @@ public class User {
         this.username = username;
         this.password = password;
     }
+
+    // 1..
+    public boolean isValidPassword(String inputPassword) {
+        return this.password.equals(inputPassword);
+    }
+
 }

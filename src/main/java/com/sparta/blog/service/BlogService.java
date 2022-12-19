@@ -4,12 +4,8 @@ import com.sparta.blog.dto.BlogRequestDto;
 import com.sparta.blog.dto.BlogResponseDto;
 import com.sparta.blog.entity.Blog;
 import com.sparta.blog.entity.User;
-import com.sparta.blog.jwt.JwtUtil;
 import com.sparta.blog.repository.BlogRepository;
 
-import com.sparta.blog.repository.UserRepository;
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,35 +19,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BlogService {
     private final BlogRepository blogRepository;
-    private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
 
     @Transactional
-    public BlogResponseDto createBlog(BlogRequestDto blogRequestDto, HttpServletRequest request) {
-        //Request에서 Token 가져오기
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
+    public BlogResponseDto createBlog(BlogRequestDto blogRequestDto, User user) {
+        // createBlog니까 생성만 하기 위해 인증인가에 대한 부분은 Controller로 이동
 
-        // 토큰이 있는 경우에만 게시글 작성
-        if (token != null) {
-            if (jwtUtil.validateToken(token)) {
-                //토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("유효하지 않은 토큰!!");
-            }
 
-            // 가져온 사용자 정보로 DB 조회
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("사용자 없어!")
-            );
-
-            // 요청받은 Dto로 DB에 저장할 객체 만들깅
-            Blog blog = blogRepository.saveAndFlush(new Blog (blogRequestDto, user));
-            return new BlogResponseDto(blog);
-        } else {
-            return null;
-        }
+        // 요청받은 Dto로 DB에 저장할 객체 만들기
+       Blog blog = blogRepository.save(new Blog (blogRequestDto, user));
+        return new BlogResponseDto(blog);
     }
 
     @Transactional(readOnly = true)
@@ -73,60 +49,15 @@ public class BlogService {
     }
 
     @Transactional
-    public BlogResponseDto updateBlog(Long id, BlogRequestDto requestDto, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-
-        if (token != null) {
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            }else {
-                throw new IllegalArgumentException("유효하지 않은 토큰!!");
-            }
-
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("사용자 없어!")
-            );
-
-            Blog blog = blogRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
-                    () -> new IllegalArgumentException("게시글 없어!")
-            );
-
-            blog.update(requestDto);
-
-            return new BlogResponseDto(blog);
-        }else {
-            return null;
-        }
+    public BlogResponseDto updateBlog(BlogRequestDto requestDto, Blog blog) {
+        blog.update(requestDto);
+        return new BlogResponseDto(blog);
     }
 
 
-    public ResponseEntity<String> deleteBlog(Long id, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
+    public ResponseEntity<String> deleteBlog(Long id) {
+        blogRepository.deleteById(id);
 
-        if (token != null) {
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            }else {
-                throw new IllegalArgumentException("유효하지 않은 토큰!!");
-            }
-
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("사용자 없어!")
-            );
-
-            Blog blog = blogRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
-                    () -> new IllegalArgumentException("게시글 없어!")
-            );
-
-            blogRepository.deleteById(id);
-
-            return new ResponseEntity<>("삭제 성공!", HttpStatus.OK);
-
-        }else{
-
-            return new ResponseEntity<>("안돼", HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>("삭제 성공!", HttpStatus.OK);
     }
 }
