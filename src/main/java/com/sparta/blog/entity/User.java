@@ -1,8 +1,12 @@
 package com.sparta.blog.entity;
 
+import com.sparta.blog.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -25,10 +29,16 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
+    @OneToMany(mappedBy = "users")
+    private List<Blog> blogs = new ArrayList<>();
 
-    public User(String username, String password) {
+    @OneToMany(mappedBy = "users")
+    private List<Comment> comments = new ArrayList<>();
+
+    public User(String username, String password, UserRoleEnum role) {
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
     public boolean isValidPassword(String inputPassword) {

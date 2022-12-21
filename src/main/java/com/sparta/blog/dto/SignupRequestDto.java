@@ -14,4 +14,7 @@ public class SignupRequestDto {
     @Size(min = 8, max = 15, message = "최소 8자 이상 15자 이하여야 함")
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "알파벳 대소문자와 숫자로만 구성되야 함")
     private String password;
+
+    private boolean admin = false;
+    private String adminToken = "";
 }
