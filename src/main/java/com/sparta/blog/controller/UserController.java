@@ -27,12 +27,8 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
-        // 3..api 클라이언트부터 요청을 받아 -> 처리-> 응답  (UI)
-        // 로그인 관련 비즈니스 처리는 Service에서, 요청과 응답에 대한 처리는 Controller에서
         String generatedToken = userService.login(loginRequestDto);
-
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, generatedToken);
         return "로그인 성공!";
     }
-
 }

@@ -1,13 +1,9 @@
 package com.sparta.blog.entity;
 
-import com.sparta.blog.dto.LoginRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -25,9 +21,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-//    @Column(nullable = false)
-//    @Enumerated(value = EnumType.STRING)
-//    private UserRoleEnum role;
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
 
 
     public User(String username, String password) {
@@ -35,7 +31,6 @@ public class User {
         this.password = password;
     }
 
-    // 1..
     public boolean isValidPassword(String inputPassword) {
         return this.password.equals(inputPassword);
     }

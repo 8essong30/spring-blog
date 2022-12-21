@@ -31,10 +31,8 @@ public class BlogController {
     public BlogResponseDto createBlog(@RequestBody BlogRequestDto requestDto, HttpServletRequest request) {
         //Request에서 Token 가져오기
         String token = jwtUtil.resolveToken(request);
-
         // 토큰 유효성 검증, 토큰에서 사용자 정보 가져오기
         Claims claims;
-        
         if (token != null) {
             if (jwtUtil.validateToken(token)) {
                 //토큰에서 사용자 정보 가져오기
@@ -42,13 +40,10 @@ public class BlogController {
             } else {
                 throw new IllegalArgumentException("유효하지 않은 토큰!!");
             }
-
             String requestedUserByToken = claims.getSubject();
-
             User user = userRepository.findByUsername(requestedUserByToken).orElseThrow(
                     () -> new IllegalArgumentException("사용자 없어!")
             );
-
             return blogService.createBlog(requestDto, user);
         } else {
             throw new IllegalArgumentException("없는 토큰");
@@ -68,11 +63,8 @@ public class BlogController {
 
     @PutMapping("/blog/{id}")
     public BlogResponseDto updateBlog(@PathVariable Long id, @RequestBody BlogRequestDto requestDto, HttpServletRequest request) {
-
         String token = jwtUtil.resolveToken(request);
-
         Claims claims;
-
         if (token != null) {
             if (jwtUtil.validateToken(token)) {
                 claims = jwtUtil.getUserInfoFromToken(token);
@@ -83,11 +75,9 @@ public class BlogController {
             User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
                     () -> new IllegalArgumentException("사용자 없어!")
             );
-
             Blog blog = blogRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
                     () -> new IllegalArgumentException("게시글 없어!")
             );
-
             return blogService.updateBlog(requestDto, blog);
         }else {
             throw new IllegalArgumentException("수정 실패");

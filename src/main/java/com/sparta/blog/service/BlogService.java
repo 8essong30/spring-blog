@@ -22,9 +22,6 @@ public class BlogService {
 
     @Transactional
     public BlogResponseDto createBlog(BlogRequestDto blogRequestDto, User user) {
-        // createBlog니까 생성만 하기 위해 인증인가에 대한 부분은 Controller로 이동
-
-
         // 요청받은 Dto로 DB에 저장할 객체 만들기
        Blog blog = blogRepository.save(new Blog (blogRequestDto, user));
         return new BlogResponseDto(blog);
@@ -57,7 +54,6 @@ public class BlogService {
 
     public ResponseEntity<String> deleteBlog(Long id) {
         blogRepository.deleteById(id);
-
         return new ResponseEntity<>("삭제 성공!", HttpStatus.OK);
     }
 }
