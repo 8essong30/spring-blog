@@ -41,6 +41,9 @@ public class CommentService {
         User user = userRepository.findByUsername(requestedUsername).orElseThrow(
                 () -> new IllegalArgumentException("없는 사용자임")
         );
+        Blog blog = blogRepository.findById(blogId).orElseThrow(
+                () -> new IllegalArgumentException("없는 게시글")
+        );
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("없는 댓글임")
@@ -49,6 +52,25 @@ public class CommentService {
         if (comment.isCommentWriter(requestedUsername)) { // 댓글의 작성자가 필요하네!!!!
             comment.updateComment(requestDto);
             return new CommentResponseDto(comment);
+        } else {
+            throw new IllegalArgumentException("너가 쓴거 아니잖아 수정 못해");
+        }
+    }
+
+    @Transactional
+    public void deleteComment(Long blogId, Long commentId, String requestedUsername) {
+        User user = userRepository.findByUsername(requestedUsername).orElseThrow(
+                () -> new IllegalArgumentException("없는사용자여")
+        );
+        Blog bLog = blogRepository.findById(blogId).orElseThrow(
+                () -> new IllegalArgumentException("없는 게시글이여")
+        );
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("없는 댓글이여")
+        );
+
+        if (comment.isCommentWriter(requestedUsername)) { // 댓글의 작성자가 필요하네!!!!
+            commentRepository.delete(comment);
         } else {
             throw new IllegalArgumentException("너가 쓴거 아니잖아 수정 못해");
         }

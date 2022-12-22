@@ -11,6 +11,8 @@ import com.sparta.blog.service.CommentService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -63,9 +65,25 @@ public class CommentController {
         }
     }
 
+    @DeleteMapping("/{blogId}/comment/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable Long blogId, @PathVariable Long commentId, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+        if (token != null) {
+            if (jwtUtil.validateToken(token)) {
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("유효하지 않은 토큰!!");
+            }
+            String requestedUsernameByToken = claims.getSubject();
 
+            commentService.deleteComment(blogId, commentId, requestedUsernameByToken);
+            return new ResponseEntity<>("댓글 삭제 완료", HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>("댓글 삭제 실패", HttpStatus.BAD_REQUEST);
+        }
 
-
+    }
 
 
 }
