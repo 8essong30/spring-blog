@@ -25,6 +25,7 @@ public class UserService {
 
     @Transactional
     public ResponseEntity<String> signup(SignupRequestDto signupRequestDto) {
+
         String username = signupRequestDto.getUsername();
         String password = signupRequestDto.getPassword();
 
@@ -44,7 +45,7 @@ public class UserService {
         }
 
         User user = new User(username, password, role);
-        userRepository.saveAndFlush(user);
+        userRepository.save(user);
 
         return new ResponseEntity<>("회원가입 성공!", HttpStatus.OK);
     }
@@ -63,6 +64,6 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호 불일치!");
         }
 
-        return jwtUtil.createToken(user.getUsername());
+        return jwtUtil.createToken(user.getUsername(), user.getRole());
     }
 }
