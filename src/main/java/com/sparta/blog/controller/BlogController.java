@@ -21,9 +21,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class BlogController {
-
-    private final UserRepository userRepository;
-    private final BlogRepository blogRepository;
     private final BlogService blogService;
     private final JwtUtil jwtUtil;
 
@@ -40,11 +37,9 @@ public class BlogController {
             } else {
                 throw new IllegalArgumentException("유효하지 않은 토큰!!");
             }
-            String requestedUserByToken = claims.getSubject();
-            User user = userRepository.findByUsername(requestedUserByToken).orElseThrow(
-                    () -> new IllegalArgumentException("사용자 없어!")
-            );
-            return blogService.createBlog(requestDto, user);
+            String requestedUsernameByToken = claims.getSubject();
+
+            return blogService.createBlog(requestDto, requestedUsernameByToken);
         } else {
             throw new IllegalArgumentException("없는 토큰");
         }
@@ -72,13 +67,9 @@ public class BlogController {
                 throw new IllegalArgumentException("유효하지 않은 토큰!!");
             }
 
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("사용자 없어!")
-            );
-            Blog blog = blogRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
-                    () -> new IllegalArgumentException("게시글 없어!")
-            );
-            return blogService.updateBlog(requestDto, blog);
+            String requestedUsernameByToken = claims.getSubject();
+
+            return blogService.updateBlog(id, requestDto, requestedUsernameByToken);
         }else {
             throw new IllegalArgumentException("수정 실패");
         }
@@ -97,14 +88,9 @@ public class BlogController {
                 throw new IllegalArgumentException("유효하지 않은 토큰!!");
             }
 
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("사용자 없어!")
-            );
+            String requestedUsernameByToken = claims.getSubject();
 
-            Blog blog = blogRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
-                    () -> new IllegalArgumentException("게시글 없어!")
-            );
-            return blogService.deleteBlog(id);
+            return blogService.deleteBlog(id, requestedUsernameByToken);
         } else {
             return new ResponseEntity<>("삭제 실패", HttpStatus.BAD_REQUEST);
         }

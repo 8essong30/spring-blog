@@ -4,8 +4,11 @@ import com.sparta.blog.dto.BlogRequestDto;
 import com.sparta.blog.dto.BlogResponseDto;
 import com.sparta.blog.entity.Blog;
 import com.sparta.blog.entity.User;
+import com.sparta.blog.entity.UserRoleEnum;
 import com.sparta.blog.repository.BlogRepository;
 
+import com.sparta.blog.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +22,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BlogService {
     private final BlogRepository blogRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public BlogResponseDto createBlog(BlogRequestDto blogRequestDto, User user) {
+    public BlogResponseDto createBlog(BlogRequestDto blogRequestDto, String requestedUsername) {
+
+        User user = userRepository.findByUsername(requestedUsername).orElseThrow(
+                () -> new IllegalArgumentException("사용자 없어!")
+        );
+
         // 요청받은 Dto로 DB에 저장할 객체 만들기
        Blog blog = blogRepository.save(new Blog (blogRequestDto, user));
         return new BlogResponseDto(blog);
@@ -46,13 +55,30 @@ public class BlogService {
     }
 
     @Transactional
-    public BlogResponseDto updateBlog(BlogRequestDto requestDto, Blog blog) {
+    public BlogResponseDto updateBlog(Long blogId, BlogRequestDto requestDto, String requestedUsername) {
+
+        User user = userRepository.findByUsername(requestedUsername).orElseThrow(
+                () -> new IllegalArgumentException("사용자 없어!")
+        );
+        Blog blog = blogRepository.findByIdAndUserId(blogId, user.getId()).orElseThrow(
+                () -> new IllegalArgumentException("게시글 없어!")
+        );
+
         blog.update(requestDto);
         return new BlogResponseDto(blog);
     }
 
 
-    public ResponseEntity<String> deleteBlog(Long id) {
+    public ResponseEntity<String> deleteBlog(Long id, String requestedUsername) {
+
+        User user = userRepository.findByUsername(requestedUsername).orElseThrow(
+                () -> new IllegalArgumentException("사용자 없어!")
+        );
+
+        Blog blog = blogRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+                () -> new IllegalArgumentException("게시글 없어!")
+        );
+
         blogRepository.deleteById(id);
         return new ResponseEntity<>("삭제 성공!", HttpStatus.OK);
     }
