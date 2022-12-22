@@ -22,7 +22,7 @@ public class Blog extends Timestamped {
     @Column(nullable = false)
     private String contents;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
@@ -43,5 +43,9 @@ public class Blog extends Timestamped {
     public void update(BlogRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
     }
 }

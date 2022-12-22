@@ -11,13 +11,11 @@ import com.sparta.blog.service.CommentService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/blog")
 public class CommentController {
 
     private final JwtUtil jwtUtil;
@@ -25,10 +23,11 @@ public class CommentController {
     private final BlogRepository blogRepository;
     private final CommentService commentService;
 
-    @PostMapping("blog/{blogId}/comment")
+    @PostMapping("/{blogId}/comment")
     public CommentResponseDto createComment(@PathVariable Long blogId, @RequestBody CommentRequestDto commentRequest, HttpServletRequest request) {
         //Request에서 Token 가져오기
         String token = jwtUtil.resolveToken(request);
+
         // 토큰 유효성 검증, 토큰에서 사용자 정보 가져오기
         Claims claims;
         if (token != null) {
@@ -39,14 +38,34 @@ public class CommentController {
                 throw new IllegalArgumentException("유효하지 않은 토큰!!");
             }
             String requestedUsernameByToken = claims.getSubject();
-            Blog blog = blogRepository.findById(blogId).orElseThrow(
-                    () -> new IllegalArgumentException("게시글 없음")
-            );
-            return commentService.createComment(commentRequest);
-        }else {
+
+            return commentService.createComment(blogId, commentRequest, requestedUsernameByToken);
+        } else {
             throw new IllegalArgumentException("없는 토큰");
         }
     }
+
+    @PutMapping("/{blogId}/comment/{commentId}")
+    public CommentResponseDto updateComment(@PathVariable Long blogId, @PathVariable Long commentId, @RequestBody CommentRequestDto requestDto, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+        if (token != null) {
+            if (jwtUtil.validateToken(token)) {
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("유효하지 않은 토큰!!");
+            }
+            String requestedUsernameByToken = claims.getSubject();
+
+            return commentService.updateComment(blogId, commentId, requestDto, requestedUsernameByToken);
+        } else {
+            throw new IllegalArgumentException("없는 토큰");
+        }
+    }
+
+
+
+
 
 
 }

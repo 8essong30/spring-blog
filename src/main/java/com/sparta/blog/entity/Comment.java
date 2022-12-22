@@ -1,5 +1,6 @@
 package com.sparta.blog.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.blog.dto.CommentRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,19 +18,23 @@ public class Comment extends Timestamped {
 
     private String contents;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "BLOG_ID")
     private Blog blog;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn (name = "USERS_ID")
-    private User user;
+    private String writer;
 
-    public Comment(CommentRequestDto commentRequestDto) {
+    public Comment(CommentRequestDto commentRequestDto, Blog blog, String writer) {
         this.contents = commentRequestDto.getContents();
+        this.blog = blog;
+        this.writer = writer;
     }
 
-    public void updateComment(String contents) {
-        this.contents = contents;
+    public void updateComment(CommentRequestDto requestDto) {
+        this.contents = requestDto.getContents();
+    }
+
+    public boolean isCommentWriter(String inputUsername) {
+        return this.writer.equals(inputUsername);
     }
 }
