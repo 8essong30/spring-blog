@@ -1,6 +1,6 @@
 package com.sparta.blog.entity;
 
-import com.sparta.blog.dto.BlogRequestDto;
+import com.sparta.blog.dto.request.BlogRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +26,7 @@ public class Blog extends Timestamped {
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
-    @OneToMany (mappedBy = "blog")
+    @OneToMany (mappedBy = "blog", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
     public Blog(String title, String contents) {
