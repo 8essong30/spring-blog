@@ -58,6 +58,21 @@ public class CommentService {
     }
 
     @Transactional
+    public CommentResponseDto updateCommentByAdmin(Long blogId, Long commentId, CommentRequestDto requestDto){
+
+        Blog blog = blogRepository.findById(blogId).orElseThrow(
+                () -> new IllegalArgumentException("없는 게시글")
+        );
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("없는 댓글임")
+        );
+
+        comment.updateComment(requestDto);
+        return new CommentResponseDto(comment);
+    }
+
+    @Transactional
     public void deleteComment(Long blogId, Long commentId, String requestedUsername) {
         User user = userRepository.findByUsername(requestedUsername).orElseThrow(
                 () -> new IllegalArgumentException("없는사용자여")
@@ -76,6 +91,14 @@ public class CommentService {
         }
     }
 
-
-
+    @Transactional
+    public void deleteCommentByAdmin(Long blogId, Long commentId) {
+        Blog bLog = blogRepository.findById(blogId).orElseThrow(
+                () -> new IllegalArgumentException("없는 게시글이여")
+        );
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("없는 댓글이여")
+        );
+        commentRepository.delete(comment);
+    }
 }

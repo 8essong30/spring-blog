@@ -66,6 +66,16 @@ public class BlogService {
         return new BlogResponseDto(blog);
     }
 
+    @Transactional
+    public BlogResponseDto updateBlogByAdmin(Long blogId, BlogRequestDto requestDto) {
+
+        Blog blog = blogRepository.findById(blogId).orElseThrow(
+                () -> new IllegalArgumentException("게시글 없어!")
+        );
+
+        blog.update(requestDto);
+        return new BlogResponseDto(blog);
+    }
 
     public ResponseEntity<String> deleteBlog(Long id, String requestedUsername) {
 
@@ -74,6 +84,16 @@ public class BlogService {
         );
 
         Blog blog = blogRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+                () -> new IllegalArgumentException("게시글 없어!")
+        );
+
+        blogRepository.deleteById(id);
+        return new ResponseEntity<>("삭제 성공!", HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> deleteBlogByAdmin(Long id) {
+
+        Blog blog = blogRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("게시글 없어!")
         );
 
