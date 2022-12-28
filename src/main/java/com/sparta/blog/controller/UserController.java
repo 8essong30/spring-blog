@@ -1,7 +1,7 @@
 package com.sparta.blog.controller;
 
-import com.sparta.blog.dto.LoginRequestDto;
-import com.sparta.blog.dto.SignupRequestDto;
+import com.sparta.blog.dto.request.LoginRequestDto;
+import com.sparta.blog.dto.request.SignupRequestDto;
 import com.sparta.blog.jwt.JwtUtil;
 import com.sparta.blog.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;

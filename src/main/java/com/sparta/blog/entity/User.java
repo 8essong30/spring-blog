@@ -1,6 +1,5 @@
 package com.sparta.blog.entity;
 
-import com.sparta.blog.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

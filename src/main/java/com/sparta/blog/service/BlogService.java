@@ -1,14 +1,12 @@
 package com.sparta.blog.service;
 
-import com.sparta.blog.dto.BlogRequestDto;
-import com.sparta.blog.dto.BlogResponseDto;
+import com.sparta.blog.dto.request.BlogRequestDto;
+import com.sparta.blog.dto.response.BlogResponseDto;
 import com.sparta.blog.entity.Blog;
 import com.sparta.blog.entity.User;
-import com.sparta.blog.entity.UserRoleEnum;
 import com.sparta.blog.repository.BlogRepository;
 
 import com.sparta.blog.repository.UserRepository;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
