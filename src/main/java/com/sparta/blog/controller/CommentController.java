@@ -1,9 +1,8 @@
 package com.sparta.blog.controller;
 
-import com.sparta.blog.dto.CommentRequestDto;
-import com.sparta.blog.dto.CommentResponseDto;
-import com.sparta.blog.entity.Blog;
-import com.sparta.blog.entity.User;
+import com.sparta.blog.dto.request.CommentRequestDto;
+import com.sparta.blog.dto.response.AuthenticatedUser;
+import com.sparta.blog.dto.response.CommentResponseDto;
 import com.sparta.blog.jwt.JwtUtil;
 import com.sparta.blog.repository.BlogRepository;
 import com.sparta.blog.repository.UserRepository;
@@ -21,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
 
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
-    private final BlogRepository blogRepository;
     private final CommentService commentService;
 
     @PostMapping("/{blogId}/comment")
@@ -31,17 +28,9 @@ public class CommentController {
         String token = jwtUtil.resolveToken(request);
 
         // 토큰 유효성 검증, 토큰에서 사용자 정보 가져오기
-        Claims claims;
         if (token != null) {
-            if (jwtUtil.validateToken(token)) {
-                //토큰에서 사용자 정보 가져오기
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("유효하지 않은 토큰!!");
-            }
-            String requestedUsernameByToken = claims.getSubject();
-
-            return commentService.createComment(blogId, commentRequest, requestedUsernameByToken);
+            AuthenticatedUser authenticatedUser = jwtUtil.validateTokenAndGetInfo(token);
+            return commentService.createComment(blogId, commentRequest, authenticatedUser.getUsername());
         } else {
             throw new IllegalArgumentException("없는 토큰");
         }
@@ -50,16 +39,9 @@ public class CommentController {
     @PutMapping("/{blogId}/comment/{commentId}")
     public CommentResponseDto updateComment(@PathVariable Long blogId, @PathVariable Long commentId, @RequestBody CommentRequestDto requestDto, HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
-        Claims claims;
         if (token != null) {
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("유효하지 않은 토큰!!");
-            }
-            String requestedUsernameByToken = claims.getSubject();
-
-            return commentService.updateComment(blogId, commentId, requestDto, requestedUsernameByToken);
+            AuthenticatedUser authenticatedUser = jwtUtil.validateTokenAndGetInfo(token);
+            return commentService.updateComment(blogId, commentId, requestDto, authenticatedUser.getUsername());
         } else {
             throw new IllegalArgumentException("없는 토큰");
         }
@@ -68,16 +50,9 @@ public class CommentController {
     @DeleteMapping("/{blogId}/comment/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable Long blogId, @PathVariable Long commentId, HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
-        Claims claims;
         if (token != null) {
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("유효하지 않은 토큰!!");
-            }
-            String requestedUsernameByToken = claims.getSubject();
-
-            commentService.deleteComment(blogId, commentId, requestedUsernameByToken);
+            AuthenticatedUser authenticatedUser = jwtUtil.validateTokenAndGetInfo(token);
+            commentService.deleteComment(blogId, commentId, authenticatedUser.getUsername());
             return new ResponseEntity<>("댓글 삭제 완료", HttpStatus.OK);
         }else {
             return new ResponseEntity<>("댓글 삭제 실패", HttpStatus.BAD_REQUEST);

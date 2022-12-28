@@ -1,5 +1,6 @@
 package com.sparta.blog.jwt;
 
+import com.sparta.blog.dto.response.AuthenticatedUser;
 import com.sparta.blog.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -83,5 +84,17 @@ public class JwtUtil {
     // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
+    // 토큰 유효성 검사 후 인증된 사용자 정보 가져오기
+    public AuthenticatedUser validateTokenAndGetInfo(String token) {
+        if (validateToken(token)) {
+            Claims claims = getUserInfoFromToken(token);
+            String username = claims.getSubject();
+            UserRoleEnum role = UserRoleEnum.valueOf(claims.get("auth").toString());
+            return new AuthenticatedUser(role, username);
+        }else {
+            throw new IllegalArgumentException("유효하지 않은 토큰!!");
+        }
     }
 }
