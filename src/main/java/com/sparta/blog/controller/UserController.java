@@ -7,6 +7,7 @@ import com.sparta.blog.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,13 +23,14 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody @Valid SignupRequestDto signupRequestDto) {
-        return userService.signup(signupRequestDto);
+        userService.signup(signupRequestDto);
+        return new ResponseEntity<>("회원가입 성공!", HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String generatedToken = userService.login(loginRequestDto);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, generatedToken);
-        return "로그인 성공!";
+        return new ResponseEntity<>("로그인 성공!", HttpStatus.OK);
     }
 }

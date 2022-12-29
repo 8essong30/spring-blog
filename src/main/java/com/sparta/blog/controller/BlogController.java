@@ -31,7 +31,7 @@ public class BlogController {
             AuthenticatedUser authenticatedUser = jwtUtil.validateTokenAndGetInfo(token);
             return blogService.createBlog(requestDto, authenticatedUser.getUsername());
         } else {
-            throw new IllegalArgumentException("없는 토큰");
+            throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
         }
     }
 
@@ -52,7 +52,7 @@ public class BlogController {
             AuthenticatedUser authenticatedUser = jwtUtil.validateTokenAndGetInfo(token);
             return blogService.updateBlog(id, requestDto, authenticatedUser.getUsername());
         } else {
-            throw new IllegalArgumentException("수정 실패");
+            throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
         }
     }
 
@@ -64,7 +64,7 @@ public class BlogController {
             if (!authenticatedUser.getUserRoleEnum().equals(UserRoleEnum.ADMIN)) throw new IllegalArgumentException("권한이 없습니다.");
             return blogService.updateBlogByAdmin(id, requestDto);
         } else {
-            throw new IllegalArgumentException("수정 실패");
+            throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
         }
     }
 

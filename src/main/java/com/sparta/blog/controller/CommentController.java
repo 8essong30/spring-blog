@@ -33,7 +33,7 @@ public class CommentController {
             AuthenticatedUser authenticatedUser = jwtUtil.validateTokenAndGetInfo(token);
             return commentService.createComment(blogId, commentRequest, authenticatedUser.getUsername());
         } else {
-            throw new IllegalArgumentException("없는 토큰");
+            throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
         }
     }
 
@@ -44,7 +44,7 @@ public class CommentController {
             AuthenticatedUser authenticatedUser = jwtUtil.validateTokenAndGetInfo(token);
             return commentService.updateComment(blogId, commentId, requestDto, authenticatedUser.getUsername());
         } else {
-            throw new IllegalArgumentException("없는 토큰");
+            throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
         }
     }
 
@@ -57,7 +57,7 @@ public class CommentController {
                 throw new IllegalArgumentException("권한이 없습니다");
             return commentService.updateCommentByAdmin(blogId, commentId, requestDto);
         } else {
-            throw new IllegalArgumentException("없는 토큰");
+            throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
         }
     }
 
@@ -69,7 +69,7 @@ public class CommentController {
             commentService.deleteComment(blogId, commentId, authenticatedUser.getUsername());
             return new ResponseEntity<>("댓글 삭제 완료", HttpStatus.OK);
         }else {
-            return new ResponseEntity<>("댓글 삭제 실패", HttpStatus.BAD_REQUEST);
+            throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
         }
 
     }
@@ -85,7 +85,7 @@ public class CommentController {
             commentService.deleteCommentByAdmin(blogId, commentId);
             return new ResponseEntity<>("댓글 삭제 완료", HttpStatus.OK);
         }else {
-            return new ResponseEntity<>("댓글 삭제 실패", HttpStatus.BAD_REQUEST);
+            throw new IllegalArgumentException("토큰이 존재하지 않습니다.");
         }
 
     }

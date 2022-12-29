@@ -26,7 +26,7 @@ public class BlogService {
     public BlogResponseDto createBlog(BlogRequestDto blogRequestDto, String requestedUsername) {
 
         User user = userRepository.findByUsername(requestedUsername).orElseThrow(
-                () -> new IllegalArgumentException("사용자 없어!")
+                () -> new IllegalArgumentException("존재하지 않는 사용자 입니다.")
         );
 
         // 요청받은 Dto로 DB에 저장할 객체 만들기
@@ -47,7 +47,7 @@ public class BlogService {
     @Transactional(readOnly = true)
     public BlogResponseDto getBlogs(Long id) {
         Blog blog = blogRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 아이디 없어!")
+                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
         return new BlogResponseDto(blog);
     }
@@ -56,10 +56,10 @@ public class BlogService {
     public BlogResponseDto updateBlog(Long blogId, BlogRequestDto requestDto, String requestedUsername) {
 
         User user = userRepository.findByUsername(requestedUsername).orElseThrow(
-                () -> new IllegalArgumentException("사용자 없어!")
+                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
         Blog blog = blogRepository.findByIdAndUserId(blogId, user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("게시글 없어!")
+                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
 
         blog.update(requestDto);
@@ -70,7 +70,7 @@ public class BlogService {
     public BlogResponseDto updateBlogByAdmin(Long blogId, BlogRequestDto requestDto) {
 
         Blog blog = blogRepository.findById(blogId).orElseThrow(
-                () -> new IllegalArgumentException("게시글 없어!")
+                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
 
         blog.update(requestDto);
@@ -80,11 +80,11 @@ public class BlogService {
     public ResponseEntity<String> deleteBlog(Long id, String requestedUsername) {
 
         User user = userRepository.findByUsername(requestedUsername).orElseThrow(
-                () -> new IllegalArgumentException("사용자 없어!")
+                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
 
         Blog blog = blogRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("게시글 없어!")
+                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
 
         blogRepository.deleteById(id);
@@ -94,7 +94,7 @@ public class BlogService {
     public ResponseEntity<String> deleteBlogByAdmin(Long id) {
 
         Blog blog = blogRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("게시글 없어!")
+                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
 
         blogRepository.deleteById(id);

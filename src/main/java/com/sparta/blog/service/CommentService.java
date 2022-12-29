@@ -22,38 +22,32 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto createComment(Long blogId, CommentRequestDto commentRequestDto, String requestedUsername){
-        User user = userRepository.findByUsername(requestedUsername).orElseThrow(
-                () -> new IllegalArgumentException("사용자 없음")
-        );
 
         Blog blog = blogRepository.findById(blogId).orElseThrow(
-                () -> new IllegalArgumentException("게시글 없어!")
+                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
         // 그러면 이제 코멘트리스트에 새롭게 생성하면 돼
-        Comment comment = commentRepository.save(new Comment(commentRequestDto, blog, user.getUsername()));
+        Comment comment = commentRepository.save(new Comment(commentRequestDto, blog, requestedUsername));
         blog.addComment(comment);
         return new CommentResponseDto(comment);
     }
 
     @Transactional
     public CommentResponseDto updateComment(Long blogId, Long commentId, CommentRequestDto requestDto, String requestedUsername){
-        // 사용자, 게시글 확인
-        User user = userRepository.findByUsername(requestedUsername).orElseThrow(
-                () -> new IllegalArgumentException("없는 사용자임")
-        );
+
         Blog blog = blogRepository.findById(blogId).orElseThrow(
-                () -> new IllegalArgumentException("없는 게시글")
+                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new IllegalArgumentException("없는 댓글임")
+                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
         );
 
         if (comment.isCommentWriter(requestedUsername)) { // 댓글의 작성자가 필요하네!!!!
             comment.updateComment(requestDto);
             return new CommentResponseDto(comment);
         } else {
-            throw new IllegalArgumentException("너가 쓴거 아니잖아 수정 못해");
+            throw new IllegalArgumentException("작성자만 수정이 가능합니다.");
         }
     }
 
@@ -61,11 +55,11 @@ public class CommentService {
     public CommentResponseDto updateCommentByAdmin(Long blogId, Long commentId, CommentRequestDto requestDto){
 
         Blog blog = blogRepository.findById(blogId).orElseThrow(
-                () -> new IllegalArgumentException("없는 게시글")
+                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new IllegalArgumentException("없는 댓글임")
+                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
         );
 
         comment.updateComment(requestDto);
@@ -74,30 +68,28 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long blogId, Long commentId, String requestedUsername) {
-        User user = userRepository.findByUsername(requestedUsername).orElseThrow(
-                () -> new IllegalArgumentException("없는사용자여")
-        );
+
         Blog bLog = blogRepository.findById(blogId).orElseThrow(
-                () -> new IllegalArgumentException("없는 게시글이여")
+                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new IllegalArgumentException("없는 댓글이여")
+                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
         );
 
         if (comment.isCommentWriter(requestedUsername)) { // 댓글의 작성자가 필요하네!!!!
             commentRepository.delete(comment);
         } else {
-            throw new IllegalArgumentException("너가 쓴거 아니잖아 수정 못해");
+            throw new IllegalArgumentException("작성자만 삭제가 가능합니다.");
         }
     }
 
     @Transactional
     public void deleteCommentByAdmin(Long blogId, Long commentId) {
         Blog bLog = blogRepository.findById(blogId).orElseThrow(
-                () -> new IllegalArgumentException("없는 게시글이여")
+                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new IllegalArgumentException("없는 댓글이여")
+                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
         );
         commentRepository.delete(comment);
     }
