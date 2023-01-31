@@ -85,8 +85,4 @@
 ![img.png](img.png)
     
 <br>
-
-## API 명세
-![image](https://user-images.githubusercontent.com/117057884/208029370-d64628aa-6a9a-46bc-b691-ababf73fcc33.png)
-![img_1.png](img_1.png)
-
+ Github Actions test
